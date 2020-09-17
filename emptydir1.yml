@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: empty
+spec:
+  containers:
+    - name: con1
+      image: httpd
+      imagePullPolicy: IfNotPresent
+      #command: ['sh', '-c', 'echo con1 container is running; sleep 36000']
+      volumeMounts:
+        - mountPath: /con1
+          name: empty-vol
+    - name: con2
+      image: ubuntu
+      imagePullPolicy: IfNotPresent
+      command: ['sh', '-c', 'echo con2 container is running;sleep 3600']
+      volumeMounts:
+        - mountPath: /con2
+          name: empty-vol
+  volumes:
+    - name: empty-vol
+      emptyDir: {}
+
+

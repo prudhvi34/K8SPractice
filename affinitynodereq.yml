@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      server: web
+  template:
+    metadata:
+      name: affinity-pod
+      labels:
+        server: web
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: env
+                    operator: In
+                    values:
+                    - prod
+      containers:
+        - name: aff-con
+          image: httpd
+          ports:
+            - containerPort: 80
+              #args:
+              # - sleep
+              # - "9999"
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: mysvc
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    server: web
+
+
+
+
+ 
+
+
+
+
+

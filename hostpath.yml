@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hostpath-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: hostpath
+  template:
+    metadata:
+      name: hostpath-pod
+      labels:
+        role: hostpath
+    spec:
+      containers:
+        - name: httpd
+          image: httpd
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: hostpath-vol
+              mountPath: /test
+      volumes:
+        - name: hostpath-vol
+          hostPath:
+            path: /tmp/data
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: mysvc
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+  selector: 
+    role: hostpath
+
+
+
+

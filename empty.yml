@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: empty
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      role: empty
+  template:
+    metadata:
+      name: empty-pod
+      labels:
+        role: empty
+    spec:
+      containers:
+        - name: empty-con1 
+          image: httpd
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - mountPath: /con1
+              name: empty-vol
+        - name: empty-con2
+          image: ubuntu
+          imagePullPolicy: IfNotPresent
+          command: ['sh', '-c', 'echo con2 container is running;sleep 3600']
+          volumeMounts:
+            - mountPath: /con2
+              name: empty-vol
+      volumes:
+        - name: empty-vol
+          emptyDir: {}
+
+
+           
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysvc
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    role: empty
+
+
+
+
+

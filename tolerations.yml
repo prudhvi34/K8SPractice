@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy1
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      role: tole
+  template:
+    metadata:
+      name: pod-tole
+      labels:
+        role: tole
+    spec:
+      tolerations:
+        - key: zone
+          operator: "Equal"
+          value: "red"
+          effect: "NoSchedule"
+      containers:
+        - name: httpd
+          image: httpd
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc1
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    role: tole
+ 
+ 
