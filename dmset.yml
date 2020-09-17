@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: dmset
+  labels:
+    comp: app
+spec:
+  selector:
+    matchLabels:
+        comp: app
+  template:
+    metadata:
+      name: dmset-pod
+      labels:
+        comp: app
+    spec:
+      containers:
+        - name: dmset-httpd
+          image: httpd
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysvc2
+spec:
+  type: NodePort
+  ports:
+    - port: 2222
+      targetPort: 80
+  selector:
+    comp: app
+
+

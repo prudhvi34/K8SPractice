@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: myrs
+  labels:
+    comp: app
+spec:
+  replicas: 4
+  selector:
+    matchLabels: 
+      comp: app
+  template:
+    metadata:
+      name: podrs
+      labels:
+        comp: app
+    spec:
+      containers:
+        - name: tomcat-con
+          image: lerndevops/samplepyapp:v2
+          ports:
+            - containerPort: 3000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysvc
+  labels:
+    comp: app
+spec:
+  type: NodePort
+  ports:
+    - port: 8000
+      targetPort: 3000
+      nodePort: 32000
+  selector:
+    comp: app 

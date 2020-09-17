@@ -1,0 +1,22 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cron-obj-job
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          name: cron-pod
+          labels:
+            cron: job
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: cron-con
+              image: busybox
+              args:
+              - /bin/sh
+              - -c
+              - date; echo Hello from K8S cluster

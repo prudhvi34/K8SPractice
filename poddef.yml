@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pod-def
+  labels:
+    server: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      server: webb
+  template:
+    metadata:
+      name: pod-def-pod
+      labels:
+        server: webb
+    spec:
+      nodeName: node1
+      containers:
+        - name: pod-def-con
+          image: nginx
+          ports:
+            - containerPort: 80
+
+--- 
+apiVersion: v1
+kind: Service
+metadata: 
+  name: mysvc
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    server: webb
