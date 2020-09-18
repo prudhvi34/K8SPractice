@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: st-deploy
+  labels:
+    role: st-deploy
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      role: st-example
+  template:
+    metadata:
+      name: st-pod
+      labels:
+        role: st-example
+    spec:
+      containers:
+        - name: con1
+          image: httpd
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: st-vol
+              mountPath: /data
+      volumes:
+        - name: st-vol
+          persistentVolumeClaim:
+            claimName: st-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: st-svc
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    role: st-example
+
+
