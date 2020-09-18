@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lb-deploy
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      role: lb-example
+  template:
+    metadata:
+      name: lb-pod
+      labels:
+        role: lb-example
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lb-svc
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    role: lb-example
+
+
